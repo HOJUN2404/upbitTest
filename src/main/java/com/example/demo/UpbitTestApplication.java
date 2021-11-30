@@ -8,7 +8,7 @@ public class UpbitTestApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(UpbitTestApplication.class, args);
-	}
+	}  
 
 }
   
