@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Upbit API</title>
+<title>호준 Test</title>
 
 <!-- 제이쿼리 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -25,26 +25,36 @@
 <body>
 	<h2>테스트 중입니다.</h2>
 	
-	<button type="button" onclick="a()"> js 테스트 </button>
-	
-	
 	<div>
-		<div id='tmp' style="color:pink;">
+		<div id="tmp" class="ticker1" style="color:pink;">
     	</div>
-	
-		<table id="track_ticker" class="table table-striped">
-			<tr>
-				<th>No</th>
-				<th>코인명</th>
-				<th>현재 가격</th>
-				<th>전일 대비 등락</th>
-				<th>거래 금액</th>
-			</tr>
+		
+		
+			<table id="track_ticker" class="table table-striped">
+				<tr>
+					<th>No</th>
+					<th>코인명</th>
+					<th>현재 가격</th>
+					<th>전일 대비 등락</th>
+					<th>거래 금액</th>
+				</tr>
+				<div id='cTable'>
+					<tbody>
+					
+					</tbody>
+				</div>
+			</table>
 			
-			<tbody>
-			
-			</tbody>
-		</table>
+			<table id="check_trade" >
+				<tr>
+					<th>No</th>
+					<th>코인명</th>
+					<th>체결시각</th>
+					<th>체결 가격</th>
+					<th>매도 / 매수</th>
+					<th>체결량</th>
+				</tr>
+			</table>
 	</div>
 	
 </body>

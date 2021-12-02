@@ -1,13 +1,29 @@
-function a() {
-	alert("js 테스트 성공");
+
+
+// 해당 함수 반복 (5초)
+$(function(){
+	setInterval(function() {setData();}, 5000);
+})
+
+$(function(){
+	setData2();
+})
+
+// 숫자 3자리마다 콤마 찍어주는 함수
+function comma(x) {
+	
+	//return x;
+	
+	return x.toString().replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
 }
 
-// setData 함수 호출
-$(function(){
-	setData();
-});
 
+// 시세 체결 조회
+function setData2(){
+	
+}
 
+// ticker 조회
 function setData(){
 	$.ajax({
 		url: "https://api.upbit.com/v1/market/all",
@@ -43,23 +59,68 @@ function setData(){
           	dataType: "json"
 		}).done(function(tickers){
 			
+			// 함수가 반복될때마다 기존의 tr 제거
+			$("#track_ticker > tbody > tr > td").remove();
+			let no = 1;
+			
 			for(let i = 0 ; i < tickers.length ; i++){
-				let htmlTableRow = "<tr><td>" + (i+1) +"</td>"
-				htmlTableRow += "<td>" + arr_korean_name[i] + "</td>"
-				htmlTableRow += "<td>" + tickers[i].trade_price + "</td>"
-				htmlTableRow += "<td>" + tickers[i].signed_change_rate + "</td>"
-				htmlTableRow += "<td>" +  + "</td>"
-
-				$("#track_ticker").append(htmlTableRow);
+				
+				let aa = tickers[i].market.substring(0,3);
+				
+				if(aa == "KRW"){
+					
+					let htmlTableRow = "<tr><td>" + no +"</td>"
+					htmlTableRow += "<td>" + arr_korean_name[i] + "</td>"
+					
+					if(tickers[i].signed_change_rate > 0){
+						htmlTableRow += "<td style=color:red>" + comma(tickers[i].trade_price) + "원" + "</td>"
+						htmlTableRow += "<td style=color:red>" + comma((tickers[i].signed_change_rate * 100).toFixed(2)) + "%" + "</td>"	
+					}
+					else if(tickers[i].signed_change_rate < 0){
+						htmlTableRow += "<td style=color:blue>" + comma(tickers[i].trade_price) + "원" + "</td>"
+						htmlTableRow += "<td style=color:blue>" + comma((tickers[i].signed_change_rate * 100).toFixed(2)) + "%" + "</td>"
+					}
+					else{
+						htmlTableRow += "<td>" + comma(tickers[i].trade_price) + "원" + "</td>"
+						htmlTableRow += "<td>" + comma((tickers[i].signed_change_rate * 100).toFixed(2)) + "%" + "</td>"
+					}
+					
+					htmlTableRow += "<td>" + tickers[i].acc_trade_price_24h + "</td>"
+	
+					$("#track_ticker").append(htmlTableRow);
+					
+					no++;
+	
+				}
+				
+				
 								
 				// 코드값으로 가져온 ticker 전체 데이터 테스트
-				console.log(tickers[i]);
+				//console.log(tickers[i]);
 			}
-			
-					
+				
 		}).fail(function(){
 			alert("업비트 API 에러");
 		})
+		
+		
+		// 시세 체결 조회
+		$.ajax({
+			url: "https://api.upbit.com/v1/trades/ticks?count=1&market=" + "",
+			dataType: "json"
+		}).done(function(ticks){
+			for(let i = 0 ; i < ticks.length ; i++){
+				//console.log(ticks[i]);
+			}
+		}).fail(function(){
+			//console.log(XMLHttpRequest());
+		})
+		
+		
 	})
 }
+
+
+
+
 
