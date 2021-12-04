@@ -1,4 +1,5 @@
 window.onload = setData();
+window.onload = check_trade();
 
 // 해당 함수 반복 (5초)
 $(function(){
@@ -18,14 +19,20 @@ function comma(x) {
 }
 
 
-function check_id(coin_name){
+function check_id(num){
 	
-	//let c_name = coin_name
-	//alert(document.getElementById('val_korean_name' + num).value);
-	//console.log(document.getElementById(val_korean_name0).value);
-	//console.log(document.getElementById("val_korean_name"+num).innerHTML);
+	console.log(document.getElementById('val_coin_name'+num).innerHTML);
+	//console.log(document.getElementById('val_coin_name'+num).localName);
+	console.log(document.querySelectorAll("#val_coin_name" + num).id);
 	
-	console.log(coin_name);
+	console.log(document.getElementsByName('val_coin_name2' + num).item.toString);
+	
+	//console.log(document.getElementById('val_coin_name'+num).id);
+	
+	
+	//console.log(document.getElementById('val_korea_name'+num).innerText);
+	//console.log(document.getElementById('val_coin_name'+num).innerText);	
+	//console.log(coin_name);
 	
 	//console.log(document.getElementById("zz").innerHTML);
 	
@@ -86,8 +93,8 @@ function setData(){
 				if(aa == "KRW"){
 					
 					let htmlTableRow = "<tr><td>" + no +"</td>"
-					htmlTableRow += "<td id=" + markets[i].market + " onclick=check_id(" + coin_name + ") value='" + markets[i].market + "'>" + arr_korean_name[i] + "</td>"
-					// htmlTableRow += "<hidden id=val_korea_name" + i + ">" + markets[i].market + "</hidden>"
+					htmlTableRow += "<td id=val_coin_name" + i + " name=val_coin_name2"+i+" onclick=check_id(" + i + ") value='" + markets[i].market + "'>" + arr_korean_name[i] + "</td>"
+					htmlTableRow += "<div id=val_korea_name" + i + ">" + markets[i].market + "</div>"
 					if(tickers[i].signed_change_rate > 0){
 						htmlTableRow += "<td style=color:red>" + comma(tickers[i].trade_price) + "원" + "</td>"
 						htmlTableRow += "<td style=color:red>" + comma((tickers[i].signed_change_rate * 100).toFixed(2)) + "%" + "</td>"	
@@ -120,23 +127,35 @@ function setData(){
 		})
 		
 		
-		// 시세 체결 조회
-		$.ajax({
-			url: "https://api.upbit.com/v1/trades/ticks?count=1&market=" + "KRW-BTC",
-			dataType: "json"
-		}).done(function(ticks){
-			for(let i = 0 ; i < ticks.length ; i++){
-				//console.log(ticks[i]);
-			}
-		}).fail(function(){
-			//console.log(XMLHttpRequest());
-		})
+		
 		
 		
 	})
 }
 
+// 시세 체결 조회
 
+function check_trade(){
+	
+	$.ajax({
+		url: "https://api.upbit.com/v1/trades/ticks?count=5&market=" + "KRW-BTC",
+		dataType: "json"
+	}).done(function(ticks){
+		for(let i = 0 ; i < ticks.length ; i++){
+			$("check_trade > tbody > tr > td").remove();
+			
+			let htmlTableRow2 = "<tr><td><p>" + ticks[i].trade_date_utc + "</p><p>" + ticks[i].trade_time_utc +"</p></td>"
+			htmlTableRow2 += "<td>" + "비트코인"  + "</td>"
+			htmlTableRow2 += "<td>" + comma(ticks[i].trade_price)  + "</td>"
+			htmlTableRow2 += "<td>" + ticks[i].trade_volume  + "</td>"
+			htmlTableRow2 += "<td>" + comma((ticks[i].trade_price * ticks[i].trade_volume))  + "</td>"  
+			
+			$("#check_trade").append(htmlTableRow2);
+		}
+	}).fail(function(){
+		//console.log(XMLHttpRequest());
+	})	
+}
 
 
 
