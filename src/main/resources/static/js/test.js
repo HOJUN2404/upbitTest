@@ -1,8 +1,8 @@
-
+window.onload = setData();
 
 // 해당 함수 반복 (5초)
 $(function(){
-	setInterval(function() {setData();}, 5000);
+	setInterval(function() {setData();}, 5000000);
 })
 
 $(function(){
@@ -15,6 +15,20 @@ function comma(x) {
 	//return x;
 	
 	return x.toString().replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
+}
+
+
+function check_id(coin_name){
+	
+	//let c_name = coin_name
+	//alert(document.getElementById('val_korean_name' + num).value);
+	//console.log(document.getElementById(val_korean_name0).value);
+	//console.log(document.getElementById("val_korean_name"+num).innerHTML);
+	
+	console.log(coin_name);
+	
+	//console.log(document.getElementById("zz").innerHTML);
+	
 }
 
 
@@ -67,11 +81,13 @@ function setData(){
 				
 				let aa = tickers[i].market.substring(0,3);
 				
+				let coin_name = tickers[i].market;
+				
 				if(aa == "KRW"){
 					
 					let htmlTableRow = "<tr><td>" + no +"</td>"
-					htmlTableRow += "<td>" + arr_korean_name[i] + "</td>"
-					
+					htmlTableRow += "<td id=" + markets[i].market + " onclick=check_id(" + coin_name + ") value='" + markets[i].market + "'>" + arr_korean_name[i] + "</td>"
+					// htmlTableRow += "<hidden id=val_korea_name" + i + ">" + markets[i].market + "</hidden>"
 					if(tickers[i].signed_change_rate > 0){
 						htmlTableRow += "<td style=color:red>" + comma(tickers[i].trade_price) + "원" + "</td>"
 						htmlTableRow += "<td style=color:red>" + comma((tickers[i].signed_change_rate * 100).toFixed(2)) + "%" + "</td>"	
@@ -106,7 +122,7 @@ function setData(){
 		
 		// 시세 체결 조회
 		$.ajax({
-			url: "https://api.upbit.com/v1/trades/ticks?count=1&market=" + "",
+			url: "https://api.upbit.com/v1/trades/ticks?count=1&market=" + "KRW-BTC",
 			dataType: "json"
 		}).done(function(ticks){
 			for(let i = 0 ; i < ticks.length ; i++){
