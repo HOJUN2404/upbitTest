@@ -4,9 +4,18 @@ body {
 	background-color: white;
 }
 
-#track_ticker {
-	width: 600px;
-	height: 2000px;
+th {
+	text-align: center;
 }
 
+#track_ticker {
+	position: relative;
+	float:left;
+	width: 45%;
+}
 
+#check_trade {
+	position: relative;
+	float:right;
+	width: 45%;
+}

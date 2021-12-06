@@ -3,12 +3,9 @@ window.onload = check_trade();
 
 // 해당 함수 반복 (5초)
 $(function(){
-	setInterval(function() {setData();}, 5000000);
+	setInterval(function() {setData();}, 5000);
 })
 
-$(function(){
-	setData2();
-})
 
 // 숫자 3자리마다 콤마 찍어주는 함수
 function comma(x) {
@@ -18,31 +15,55 @@ function comma(x) {
 	return x.toString().replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
 }
 
-
+/*
 function check_id(num){
 	
-	console.log(document.getElementById('val_coin_name'+num).innerHTML);
-	//console.log(document.getElementById('val_coin_name'+num).localName);
-	console.log(document.querySelectorAll("#val_coin_name" + num).id);
+	//console.log(document.getElementById('val_coin_name'+num).innerHTML);
+	
+	//console.log(document.getElementById('val_coin_name'+num).value);
+	
+	console.log($(el).data('market'));
+	
+	console.log($("#val_coin_name"+num).data('market'));
+	
+	//console.log(document.querySelectorAll("#val_coin_name" + num).id);
 	
 	console.log(document.getElementsByName('val_coin_name2' + num).item.toString);
 	
-	//console.log(document.getElementById('val_coin_name'+num).id);
+	
+}
+*/
+ 
+function check_id(el){
+	
+	$.ajax({
+		url: "https://api.upbit.com/v1/trades/ticks?count=5&market=" + $(el).data('market'),
+		dataType: "json"
+	}).done(function(ticks){
+		$("#check_trade > tbody > tr > td").remove();
+		
+		for(let i = 0 ; i < ticks.length ; i++){
+			
+			let htmlTableRow2 = "<tr><td><p>" + ticks[i].trade_date_utc + "</p><p>" + ticks[i].trade_time_utc +"</p></td>"
+			htmlTableRow2 += "<td>" + $(el).data('korean')  + "</td>"
+			htmlTableRow2 += "<td>" + comma(ticks[i].trade_price)  + "</td>"
+			htmlTableRow2 += "<td>" + ticks[i].trade_volume  + "</td>"
+			htmlTableRow2 += "<td>" + comma((ticks[i].trade_price * ticks[i].trade_volume).toFixed(0))  + "</td>"
+			
+			$("#check_trade").append(htmlTableRow2);
+		}
+	}).fail(function(){
+		//console.log(XMLHttpRequest());
+	})
+	
+	console.log($(el).data('market'));
+	
+	console.log($("#val_coin_name"+num).data('market'));
 	
 	
-	//console.log(document.getElementById('val_korea_name'+num).innerText);
-	//console.log(document.getElementById('val_coin_name'+num).innerText);	
-	//console.log(coin_name);
-	
-	//console.log(document.getElementById("zz").innerHTML);
 	
 }
 
-
-// 시세 체결 조회
-function setData2(){
-	
-}
 
 // ticker 조회
 function setData(){
@@ -93,7 +114,14 @@ function setData(){
 				if(aa == "KRW"){
 					
 					let htmlTableRow = "<tr><td>" + no +"</td>"
-					htmlTableRow += "<td id=val_coin_name" + i + " name=val_coin_name2"+i+" onclick=check_id(" + i + ") value='" + markets[i].market + "'>" + arr_korean_name[i] + "</td>"
+					//htmlTableRow += "<td id=val_coin_name" + i + " name=val_coin_name2"+i+" onclick=check_id(" + i + ") value='" + markets[i].market + "'>" + arr_korean_name[i] + "</td>"
+					
+					//jw
+					//htmlTableRow += '<td onclick=check_id(this) data-market="' + markets[i].market + "'>" + arr_korean_name[i] + '</td>'
+					htmlTableRow += "<td onclick=check_id(this) data-market='" + markets[i].market + "' data-korean=" + arr_korean_name[i] + ">" + arr_korean_name[i] + "</td>"
+					
+					//htmlTableRow += "<td id=val_coin_name" + i + " name=val_coin_name2"+i+" onclick=check_id(" + i + ") data-market='" + markets[i].market + "'>" + arr_korean_name[i] + "</td>"
+					
 					htmlTableRow += "<div id=val_korea_name" + i + ">" + markets[i].market + "</div>"
 					if(tickers[i].signed_change_rate > 0){
 						htmlTableRow += "<td style=color:red>" + comma(tickers[i].trade_price) + "원" + "</td>"
@@ -108,16 +136,14 @@ function setData(){
 						htmlTableRow += "<td>" + comma((tickers[i].signed_change_rate * 100).toFixed(2)) + "%" + "</td>"
 					}
 					
-					htmlTableRow += "<td>" + tickers[i].acc_trade_price_24h + "</td>"
+					htmlTableRow += "<td>" + comma((tickers[i].acc_trade_price_24h).toFixed(0)) + ' KRW' + "</td>"
 	
 					$("#track_ticker").append(htmlTableRow);
 					
 					no++;
 	
 				}
-				
-				
-								
+			
 				// 코드값으로 가져온 ticker 전체 데이터 테스트
 				//console.log(tickers[i]);
 			}
@@ -126,12 +152,11 @@ function setData(){
 			alert("업비트 API 에러");
 		})
 		
-		
-		
-		
-		
 	})
 }
+
+
+
 
 // 시세 체결 조회
 
@@ -148,7 +173,7 @@ function check_trade(){
 			htmlTableRow2 += "<td>" + "비트코인"  + "</td>"
 			htmlTableRow2 += "<td>" + comma(ticks[i].trade_price)  + "</td>"
 			htmlTableRow2 += "<td>" + ticks[i].trade_volume  + "</td>"
-			htmlTableRow2 += "<td>" + comma((ticks[i].trade_price * ticks[i].trade_volume))  + "</td>"  
+			htmlTableRow2 += "<td>" + comma((ticks[i].trade_price * ticks[i].trade_volume).toFixed(0))  + "</td>"
 			
 			$("#check_trade").append(htmlTableRow2);
 		}
